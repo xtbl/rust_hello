@@ -1,14 +1,11 @@
 fn main() {
-    // let x: u8 = 255;
-    let x = 10.2;
-    println!("Hello world!");
-    println!("x is {}", x);
+    let celsius_temp = 23.0;
+    let fahrenheit_temp = celsius_to_fahrenheit(celsius_temp);
 
-    let a = 13;
-    let b = 2.3;
-    let c: f32 = 120.0;
+    assert_eq!(fahrenheit_temp, 73.4);
+    println!("Test passed!");
+}
 
-    let average = (a as f64 + b + c as f64) / 3 as f64;
-
-    assert_eq!(average, 45.1);
+fn celsius_to_fahrenheit(celsius_temp: f64) -> f64 {
+    1.8 * celsius_temp + 32.0
 }
