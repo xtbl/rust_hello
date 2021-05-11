@@ -1,25 +1,55 @@
 fn main() {
-    let numbers = [1, 9, -2, 0, 23, 20, -7, 13, 37, 20, 56, -18, 20, 3];
-    let max: i32;
-    let min: i32;
-    let mean: f64;
+    let test1 = "We need more space.";
+    assert_eq!(trim_spaces(test1), "We need more space.");
 
-    let mut temp_max = 0;
-    let mut temp_min = 0;
-    let mut sum = 0;
+    let test2 = String::from("   There's space in front.");
+    assert_eq!(trim_spaces(&test2), "There's space in front.");
 
-    for (index, num) in numbers.iter().enumerate() {
-        println!("num is {}", num);
-        temp_max = if index == 0  {*num} else if num > &temp_max {*num} else {temp_max};
-        temp_min = if index == 0 {*num} else if num < &temp_min {*num} else {temp_min};
-        sum = sum + num;
-    }
-    max = temp_max;
-    min = temp_min;
-    mean = sum as f64 / numbers.len() as f64;
+    let test3 = String::from("There's space to the rear. ");
+    assert_eq!(trim_spaces(&test3[..]), "There's space to the rear.");
 
-    assert_eq!(max, 56);
-    assert_eq!(min, -18);
-    assert_eq!(mean, 12.5);
+    let test4 = "  We're surrounded by space!    ";
+    assert_eq!(trim_spaces(test4), "We're surrounded by space!");
+
+    let test5 = "     ";
+    assert_eq!(trim_spaces(test5), "");
+
+    let test6 = "";
+    assert_eq!(trim_spaces(test6), "");
+
+    let test7 = " 🚀 ";
+    assert_eq!(trim_spaces(test7), "🚀");
     println!("Tests passed!");
+}
+
+fn trim_spaces(s: &str) -> &str {
+    // use as slice byte
+    let bytes = s.as_bytes();
+
+    let mut first_index: usize = 1000000;
+    let mut last_index: usize = 1000000;
+    for (index, &item) in bytes.iter().enumerate() {
+        if item != b' ' {
+            first_index = index;
+            break;
+        }
+    }
+    for (index2, &item2) in bytes.iter().enumerate().rev() {
+        if item2 != b' ' {
+            last_index = index2;
+            break;
+        }
+    }
+    if first_index == 1000000 && last_index == 1000000 {
+        return "";
+    }
+
+    println!("bytes.len() {}", bytes.len());
+    if bytes.len() == 0 {
+        println!("IS 0");
+        return &s;
+    }
+    &s[first_index..last_index+1]
+
+
 }
