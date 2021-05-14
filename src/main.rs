@@ -1,55 +1,52 @@
+
+use rand::prelude::*;
+use std::io;
+
 fn main() {
-    let test1 = "We need more space.";
-    assert_eq!(trim_spaces(test1), "We need more space.");
 
-    let test2 = String::from("   There's space in front.");
-    assert_eq!(trim_spaces(&test2), "There's space in front.");
+    // test random number
+    assert_eq!((0..11).contains(&get_random_number()), true);
 
-    let test3 = String::from("There's space to the rear. ");
-    assert_eq!(trim_spaces(&test3[..]), "There's space to the rear.");
+    // test check number guess -> too high, too low, correct
+    let number_to_guess = 1;
+    let guess = 5;
+    assert_eq!(guess_verification(number_to_guess, guess), "number too high");
+    assert_eq!(guess_verification(2, 1), "number too low");
+    assert_eq!(guess_verification(10, 10), "number is correct");
 
-    let test4 = "  We're surrounded by space!    ";
-    assert_eq!(trim_spaces(test4), "We're surrounded by space!");
-
-    let test5 = "     ";
-    assert_eq!(trim_spaces(test5), "");
-
-    let test6 = "";
-    assert_eq!(trim_spaces(test6), "");
-
-    let test7 = " 🚀 ";
-    assert_eq!(trim_spaces(test7), "🚀");
     println!("Tests passed!");
+
+    let guess_num = get_random_number();
+
+    loop {
+
+      let mut buffer = String::new();
+      println!("Enter a number:");
+      io::stdin().read_line(&mut buffer);
+      println!("buffer is: {}", buffer);
+      let user_number: u8 = buffer.trim().parse().unwrap();
+      println!("number is: {}", user_number);
+      let guess_number_response = guess_verification(guess_num, user_number);
+      println!("{}", guess_number_response);
+
+      if guess_number_response == "number is correct" {
+        break;
+      }
+    }
 }
 
-fn trim_spaces(s: &str) -> &str {
-    // use as slice byte
-    let bytes = s.as_bytes();
+fn get_random_number() -> u8 {
+    let rand_num = thread_rng().gen_range(1..11);
+    rand_num
+}
 
-    let mut first_index: usize = 1000000;
-    let mut last_index: usize = 1000000;
-    for (index, &item) in bytes.iter().enumerate() {
-        if item != b' ' {
-            first_index = index;
-            break;
-        }
-    }
-    for (index2, &item2) in bytes.iter().enumerate().rev() {
-        if item2 != b' ' {
-            last_index = index2;
-            break;
-        }
-    }
-    if first_index == 1000000 && last_index == 1000000 {
-        return "";
-    }
+fn guess_verification(number_to_guess: u8, guess: u8) -> String {
+    print!("vars {} {} ",number_to_guess, guess);
 
-    println!("bytes.len() {}", bytes.len());
-    if bytes.len() == 0 {
-        println!("IS 0");
-        return &s;
+    match guess {
+        guess if number_to_guess < guess => String::from("number too high"),
+        guess if number_to_guess > guess => String::from("number too low"),
+        guess if number_to_guess == guess => String::from("number is correct"),
+        _ => String::from("number is wrong")
     }
-    &s[first_index..last_index+1]
-
-
 }
