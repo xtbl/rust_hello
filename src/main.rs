@@ -1,40 +1,38 @@
-use std::env;
-use std::fs;
 
-fn main() {
+    // [x] create rectangle struct: width height f64
+    // [x] create get_area() w * h
+    // [x] create scale() * w and h by input f64
+    // [x] create new()  input w, h -> new Rectangle
 
-    // [x] create list of names
-    // [x] read params (path_file, search_name)
-    // [x] read list
-    // [x] check if search_name was found
-    // [x] print message if name is found
 
-    let path = env::args().nth(1).unwrap();
-    let search_name = env::args().nth(2).unwrap();
-    println!("arg1 {}", path);
-    println!("arg1 {}", search_name);
-    // has both params
-    assert_eq!(path, "moonwalkers.txt");
-    assert_eq!(search_name, "Scott");
-
-    println!("{:?}", std::env::current_exe());
-    let file_content = fs::read_to_string("moonwalkers.txt").unwrap();
-    assert_eq!(is_name_in_list(file_content, String::from("Armstrong")), true);
-
-    let file_content = fs::read_to_string("moonwalkers.txt").unwrap();
-    if is_name_in_list(file_content, search_name) {
-      println!("Name was found in list.");
-    }
-
-    println!("Tests passed!");
+struct Rectangle {
+  width: f64,
+  height: f64
 }
 
-fn is_name_in_list(list: String, name: String) -> bool {
-  let mut is_in_list: bool = false;
-  for name_line in list.lines() {
-    if name_line == name {
-      is_in_list = true;
+impl Rectangle {
+  fn new(width: f64, height: f64) -> Rectangle {
+    Rectangle {
+      width: width,
+      height: height
     }
   }
-  is_in_list
+
+  fn get_area(&self) -> f64 {
+    &self.width * &self.height
+  }
+
+  fn scale(&mut self, scale: f64) {
+    self.width = self.width * scale;
+    self.height = self.height * scale;
+  }
+
+}
+
+fn main() {
+    let mut rect = Rectangle::new(1.2, 3.4);
+    assert_eq!(rect.get_area(), 4.08);
+    rect.scale(0.5);
+    assert_eq!(rect.get_area(), 1.02);
+    println!("Tests passed!");
 }
