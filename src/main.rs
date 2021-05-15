@@ -1,52 +1,40 @@
-
-use rand::prelude::*;
-use std::io;
+use std::env;
+use std::fs;
 
 fn main() {
 
-    // test random number
-    assert_eq!((0..11).contains(&get_random_number()), true);
+    // [x] create list of names
+    // [x] read params (path_file, search_name)
+    // [x] read list
+    // [x] check if search_name was found
+    // [x] print message if name is found
 
-    // test check number guess -> too high, too low, correct
-    let number_to_guess = 1;
-    let guess = 5;
-    assert_eq!(guess_verification(number_to_guess, guess), "number too high");
-    assert_eq!(guess_verification(2, 1), "number too low");
-    assert_eq!(guess_verification(10, 10), "number is correct");
+    let path = env::args().nth(1).unwrap();
+    let search_name = env::args().nth(2).unwrap();
+    println!("arg1 {}", path);
+    println!("arg1 {}", search_name);
+    // has both params
+    assert_eq!(path, "moonwalkers.txt");
+    assert_eq!(search_name, "Scott");
+
+    println!("{:?}", std::env::current_exe());
+    let file_content = fs::read_to_string("moonwalkers.txt").unwrap();
+    assert_eq!(is_name_in_list(file_content, String::from("Armstrong")), true);
+
+    let file_content = fs::read_to_string("moonwalkers.txt").unwrap();
+    if is_name_in_list(file_content, search_name) {
+      println!("Name was found in list.");
+    }
 
     println!("Tests passed!");
-
-    let guess_num = get_random_number();
-
-    loop {
-
-      let mut buffer = String::new();
-      println!("Enter a number:");
-      io::stdin().read_line(&mut buffer);
-      println!("buffer is: {}", buffer);
-      let user_number: u8 = buffer.trim().parse().unwrap();
-      println!("number is: {}", user_number);
-      let guess_number_response = guess_verification(guess_num, user_number);
-      println!("{}", guess_number_response);
-
-      if guess_number_response == "number is correct" {
-        break;
-      }
-    }
 }
 
-fn get_random_number() -> u8 {
-    let rand_num = thread_rng().gen_range(1..11);
-    rand_num
-}
-
-fn guess_verification(number_to_guess: u8, guess: u8) -> String {
-    print!("vars {} {} ",number_to_guess, guess);
-
-    match guess {
-        guess if number_to_guess < guess => String::from("number too high"),
-        guess if number_to_guess > guess => String::from("number too low"),
-        guess if number_to_guess == guess => String::from("number is correct"),
-        _ => String::from("number is wrong")
+fn is_name_in_list(list: String, name: String) -> bool {
+  let mut is_in_list: bool = false;
+  for name_line in list.lines() {
+    if name_line == name {
+      is_in_list = true;
     }
+  }
+  is_in_list
 }
