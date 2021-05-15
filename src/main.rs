@@ -1,38 +1,23 @@
+use std::ops::Add;
 
-    // [x] create rectangle struct: width height f64
-    // [x] create get_area() w * h
-    // [x] create scale() * w and h by input f64
-    // [x] create new()  input w, h -> new Rectangle
+fn sum_boxes<T: Add>(boxed_a: Box<T>, boxed_b: Box<T>) -> Box<<T as Add>::Output> {
 
+  let unboxed_a = *boxed_a;
+  let unboxed_b = *boxed_b;
+  let sum = unboxed_a + unboxed_b;
 
-struct Rectangle {
-  width: f64,
-  height: f64
-}
-
-impl Rectangle {
-  fn new(width: f64, height: f64) -> Rectangle {
-    Rectangle {
-      width: width,
-      height: height
-    }
-  }
-
-  fn get_area(&self) -> f64 {
-    self.width * self.height
-  }
-
-  fn scale(&mut self, scale: f64) {
-    self.width = self.width * scale;
-    self.height = self.height * scale;
-  }
-
+  let boxed_sum = Box::new(sum);
+  boxed_sum
 }
 
 fn main() {
-    let mut rect = Rectangle::new(1.2, 3.4);
-    assert_eq!(rect.get_area(), 4.08);
-    rect.scale(0.5);
-    assert_eq!(rect.get_area(), 1.02);
+    let one = Box::new(1);
+    let two = Box::new(2);
+    assert_eq!(*sum_boxes(one, two), 3);
+
+    let pi = Box::new(3.14159);
+    let e = Box::new(2.71828);
+    assert_eq!(*sum_boxes(pi, e), 5.85987);
+
     println!("Tests passed!");
 }
