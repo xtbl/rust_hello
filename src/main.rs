@@ -19,7 +19,7 @@ impl Rectangle {
   }
 
   fn get_area(&self) -> f64 {
-    &self.width * &self.height
+    self.width * self.height
   }
 
   fn scale(&mut self, scale: f64) {
