@@ -1,22 +1,31 @@
-use std::fmt;
-
-struct Satellite {
-    name: String,
-    velocity: f64 // miles per second
+enum Location {
+  Unknown,
+  Anonymous,
+  Known(f64, f64)
 }
 
-impl fmt::Display for Satellite {
-  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-    write!(f, "Satellite Name: {}, Velocity: {}", self.name, self.velocity)
+trait Display {
+  fn display(&self) -> String {
+    String::from("default display")
   }
 }
 
-/* YOUR CODE GOES HERE */
+impl Display for Location {
+  fn display(&self) -> String {
+    match self {
+      Location::Unknown => println!("location for unknown"),
+      Location::Anonymous => println!("location for anon"),
+      Location::Known(x,y) => println!("location for known {}, {}", x, y),
+    }
+    String::from("default display")
+  }
+}
 
 fn main() {
-    let hubble = Satellite {
-        name: String::from("Hubble Telescope"),
-        velocity: 4.72
-    };
-    println!("hubble is {}", hubble);
+  let address = Location::Unknown;
+  address.display();
+  let address = Location::Anonymous;
+  address.display();
+  let address = Location::Known(28.608295, -80.604177);
+  address.display();
 }
