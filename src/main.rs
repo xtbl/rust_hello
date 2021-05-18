@@ -1,44 +1,46 @@
 use std::io;
-use rand::prelude::*;
+use std::env;
+use std::fs;
+use std::collections::HashMap;
+
+// read file
+    // receive path as command arg
+// count number of times each word occurs
+    // parse text into words split_whitespace()
+    // ignore capitalization
+    // keep track of how many times each unique word occurs
+    // there might be multiple most common words
+// print message with most common words and how many times they appeared
 
 fn main() {
-    let secret_number = thread_rng().gen_range(1..11);
-    println!("I'm thinking of a number between 1 and 100...");
-    println!("Guess the number:");
-    loop {
-        let mut guess = String::new();
-        match io::stdin().read_line(&mut guess) {
-          Ok(n) => {
-              println!("{} read line", n);
-              println!("{}", guess);
-          }
-          Err(error) => println!("error: {}", error),
-      }
-        let mut valid_result;
-        let mut guess_result = 0;
-        match guess.trim().parse::<u32>() {
-            Ok(result) => {
-              guess_result = result;
-              valid_result = true;
-            },
-            Err(error) => {
-              println!("error {}", error);
-              valid_result = false;
-            }
-        };
 
-        if valid_result {
-            if guess_result > secret_number {
-                println!("\n{} is too high! Guess lower:", guess);
-            } else if guess_result < secret_number {
-                println!("\n{} is too low! Guess higher:", guess);
-            } else {
-                println!("\nYou got it! The secret number was {}.", secret_number);
-                break;
-            }
-        } else {
-            println!("Result wasn't valid");
-            break;
-        }
+    let path = env::args().nth(1).unwrap();
+    println!("arg1 {}", path);
+    assert_eq!(path, "word_list.txt");
+
+    let file_content = fs::read_to_string(path).unwrap();
+    println!("file content {}", file_content);
+
+    let mut splitted = file_content.split_whitespace();
+    assert_eq!(Some("Gossip"), splitted.next());
+    assert_eq!(Some("was"), splitted.next());
+
+    // println!("insert_words: {:?}", insert_words(splitted));
+    let mut word_freqs = insert_words(splitted);
+    // sort hashmap
+    let mut map_to_vec: Vec<(&String, &u32)> = word_freqs.iter().collect();
+    map_to_vec.sort_by(|a, b| b.1.cmp(a.1));
+    println!("map_to_vec sorted: {:?}", map_to_vec);
+
+    println!("Tests passed!");
+}
+
+fn insert_words(words: std::str::SplitWhitespace<'_>) -> HashMap<String, u32> {
+    let mut word_freq = HashMap::new();
+    for word in words {
+        println!("word: {}", word);
+        let word_freq_ref = word_freq.entry(String::from(word)).or_insert(0);
+        *word_freq_ref += 1;
     }
+    word_freq
 }
