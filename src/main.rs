@@ -1,31 +1,44 @@
-enum Location {
-  Unknown,
-  Anonymous,
-  Known(f64, f64)
-}
-
-trait Display {
-  fn display(&self) -> String {
-    String::from("default display")
-  }
-}
-
-impl Display for Location {
-  fn display(&self) -> String {
-    match self {
-      Location::Unknown => println!("location for unknown"),
-      Location::Anonymous => println!("location for anon"),
-      Location::Known(x,y) => println!("location for known {}, {}", x, y),
-    }
-    String::from("default display")
-  }
-}
+use std::io;
+use rand::prelude::*;
 
 fn main() {
-  let address = Location::Unknown;
-  address.display();
-  let address = Location::Anonymous;
-  address.display();
-  let address = Location::Known(28.608295, -80.604177);
-  address.display();
+    let secret_number = thread_rng().gen_range(1..11);
+    println!("I'm thinking of a number between 1 and 100...");
+    println!("Guess the number:");
+    loop {
+        let mut guess = String::new();
+        match io::stdin().read_line(&mut guess) {
+          Ok(n) => {
+              println!("{} read line", n);
+              println!("{}", guess);
+          }
+          Err(error) => println!("error: {}", error),
+      }
+        let mut valid_result;
+        let mut guess_result = 0;
+        match guess.trim().parse::<u32>() {
+            Ok(result) => {
+              guess_result = result;
+              valid_result = true;
+            },
+            Err(error) => {
+              println!("error {}", error);
+              valid_result = false;
+            }
+        };
+
+        if valid_result {
+            if guess_result > secret_number {
+                println!("\n{} is too high! Guess lower:", guess);
+            } else if guess_result < secret_number {
+                println!("\n{} is too low! Guess higher:", guess);
+            } else {
+                println!("\nYou got it! The secret number was {}.", secret_number);
+                break;
+            }
+        } else {
+            println!("Result wasn't valid");
+            break;
+        }
+    }
 }
